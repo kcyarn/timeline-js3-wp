@@ -18,30 +18,30 @@ $timeline_js3_page_id = get_option('_timeline_js3_page');
 global $wpdb;
 if($timeline_js3_cat === "0") {
 $events = $wpdb->get_results( "SELECT *
-FROM wp_posts, wp_postmeta m1
-INNER JOIN wp_postmeta m2
+FROM $wpdb->posts, $wpdb->postmeta m1
+INNER JOIN $wpdb->postmeta m2
 ON m1.post_id = m2.post_id
-WHERE (wp_posts.ID = m1.post_id AND wp_posts.ID = m2.post_id)
+WHERE ($wpdb->posts.ID = m1.post_id AND $wpdb->posts.ID = m2.post_id)
 AND post_status = 'publish'
 AND (post_type ='event_type')
 AND m1.meta_key = 'event_start_date' AND m2.meta_key = 'event_end_date'", OBJECT);
 }
 else {
 $events = $wpdb->get_results( "SELECT *
-FROM (wp_postmeta m1, wp_posts)
-INNER JOIN wp_term_relationships
-ON (wp_posts.ID = wp_term_relationships.object_id)
-INNER JOIN wp_term_taxonomy
-ON (wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id)
-INNER JOIN wp_postmeta m2
+FROM ($wpdb->postmeta m1, $wpdb->posts)
+INNER JOIN $wpdb->term_relationships
+ON ($wpdb->posts.ID = $wpdb->term_relationships.object_id)
+INNER JOIN $wpdb->term_taxonomy
+ON ($wpdb->term_relationships.term_taxonomy_id = $wpdb->term_taxonomy.term_taxonomy_id)
+INNER JOIN $wpdb->postmeta m2
 ON m1.post_id = m2.post_id
-WHERE (wp_posts.ID = m1.post_id AND wp_posts.ID = m2.post_id)
+WHERE ($wpdb->posts.ID = m1.post_id AND $wpdb->posts.ID = m2.post_id)
 AND (post_status = 'publish')
 AND (post_type ='event_type')
 AND (m1.meta_key = 'event_start_date' )
 AND (m2.meta_key = 'event_end_date')
-AND (wp_term_taxonomy.taxonomy = 'category')
-AND wp_term_taxonomy.term_id IN ('" . $timeline_js3_cat . "')", OBJECT);
+AND ($wpdb->term_taxonomy.taxonomy = 'category')
+AND $wpdb->term_taxonomy.term_id IN ('" . $timeline_js3_cat . "')", OBJECT);
 }
 $site_title = get_bloginfo( 'name' );
 $timeline_js3_page_title = get_the_title( $timeline_js3_page_id );
